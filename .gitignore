@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Vídeos muito pesados (GitHub rejeita >100MB; recompressa ou aloja fora e serve por URL)
+public/owner.mp4
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

@@ -1,26 +1,272 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #121212;
+  --foreground: #f5f7fb;
+  --surface: #0f1218;
+  /* Fundo padrão do app (páginas de marketing) — alinha overscroll / bounce em iOS. */
+  --fnx-app-bg: #f5f5f7;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-jakarta), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background-color: var(--fnx-app-bg);
+  -webkit-tap-highlight-color: rgba(11, 31, 58, 0.08);
+  touch-action: manipulation;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--fnx-app-bg);
+  color: #1f2933;
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, sans-serif;
+}
+
+/* Futuristic, minimal section titles — Plus Jakarta for contrast with Inter body */
+@layer components {
+  .type-eyebrow {
+    font-family: var(--font-heading);
+    @apply text-[0.7rem] font-medium uppercase tracking-[0.28em] text-[#0B1F3A] sm:text-xs;
+  }
+  .type-eyebrow-muted {
+    font-family: var(--font-heading);
+    @apply text-[0.7rem] font-medium uppercase tracking-[0.26em] text-[#64748B] sm:text-xs;
+  }
+  .type-hero {
+    font-family: var(--font-heading);
+    @apply text-4xl font-semibold leading-[1.06] tracking-[-0.045em] text-[#0F172A] sm:text-5xl md:text-6xl;
+  }
+  .type-title-section {
+    font-family: var(--font-heading);
+    @apply text-3xl font-semibold leading-[1.1] tracking-[-0.04em] text-[#0F172A] md:text-4xl;
+  }
+  .type-title-section-lg {
+    font-family: var(--font-heading);
+    @apply text-3xl font-semibold leading-[1.08] tracking-[-0.04em] text-[#0F172A] sm:text-4xl md:text-5xl;
+  }
+  .type-smartai {
+    font-family: var(--font-heading);
+    @apply text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-white md:text-5xl;
+  }
+  .type-owners-hero {
+    font-family: var(--font-heading);
+    @apply text-3xl font-semibold leading-[1.1] tracking-[-0.04em] text-[#0F172A] sm:text-4xl;
+  }
+  .type-service-areas {
+    font-family: var(--font-heading);
+    @apply text-2xl font-semibold leading-[1.12] tracking-[-0.04em] text-[#0B1F3A] sm:text-3xl;
+  }
+  .type-page-h1 {
+    font-family: var(--font-heading);
+    @apply text-4xl font-semibold leading-[1.1] tracking-[-0.04em] text-[#0F172A] md:text-5xl;
+  }
+  .type-card-title {
+    font-family: var(--font-heading);
+    @apply text-xl font-medium leading-snug tracking-[-0.02em] text-[#0F172A] md:text-2xl;
+  }
+  .type-eyebrow-white {
+    font-family: var(--font-heading);
+    @apply text-[0.7rem] font-medium uppercase tracking-[0.22em] text-white/80 sm:text-xs;
+  }
+  .type-fleet-eyebrow {
+    font-family: var(--font-heading);
+    @apply text-xs font-medium uppercase tracking-[0.3em] text-[#0B1F3A] sm:text-sm;
+  }
+  .type-fleet-slide-label {
+    font-family: var(--font-heading);
+    @apply text-base font-medium leading-tight tracking-[-0.02em] sm:text-lg md:text-xl;
+  }
+  .type-footer-label {
+    font-family: var(--font-heading);
+    @apply m-0 text-sm font-bold uppercase tracking-[0.2em] text-[#0F172A];
+  }
+
+  /* Owner: transição contínua na última 0,5cm (muitos stop ≈ suave, sem “faixa”; md+; móvel = sem) */
+  .owner-operator-media-mask {
+    @media (min-width: 768px) {
+      -webkit-mask-image: linear-gradient(
+        90deg,
+        #000 0%,
+        #000 max(0%, calc(100% - 0.5cm)),
+        rgba(0, 0, 0, 0.9) max(0%, calc(100% - 0.42cm)),
+        rgba(0, 0, 0, 0.7) max(0%, calc(100% - 0.33cm)),
+        rgba(0, 0, 0, 0.5) max(0%, calc(100% - 0.24cm)),
+        rgba(0, 0, 0, 0.3) max(0%, calc(100% - 0.15cm)),
+        rgba(0, 0, 0, 0.12) max(0%, calc(100% - 0.07cm)),
+        rgba(0, 0, 0, 0.04) max(0%, calc(100% - 0.02cm)),
+        #0000 100%
+      );
+      mask-image: linear-gradient(
+        90deg,
+        #000 0%,
+        #000 max(0%, calc(100% - 0.5cm)),
+        rgba(0, 0, 0, 0.9) max(0%, calc(100% - 0.42cm)),
+        rgba(0, 0, 0, 0.7) max(0%, calc(100% - 0.33cm)),
+        rgba(0, 0, 0, 0.5) max(0%, calc(100% - 0.24cm)),
+        rgba(0, 0, 0, 0.3) max(0%, calc(100% - 0.15cm)),
+        rgba(0, 0, 0, 0.12) max(0%, calc(100% - 0.07cm)),
+        rgba(0, 0, 0, 0.04) max(0%, calc(100% - 0.02cm)),
+        #0000 100%
+      );
+      -webkit-mask-size: 100% 100%;
+      mask-size: 100% 100%;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+    }
+  }
+}
+
+.section-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  filter: blur(2px);
+  transition:
+    opacity 900ms ease,
+    transform 1000ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 900ms ease;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.section-visible {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+.section-separator {
+  position: relative;
+}
+
+.section-separator::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: min(88vw, 72rem);
+  transform: translateX(-50%);
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.12) 22%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.12) 78%,
+    transparent 100%
+  );
+}
+
+.logo-load-in {
+  animation: logoFadeIn 1200ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes logoFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(1px);
+  }
+  to {
+    opacity: 0.95;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes whyFnxPanel {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.why-fnx-panel-swap {
+  animation: whyFnxPanel 0.45s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .why-fnx-panel-swap {
+    animation: none;
+  }
+}
+
+/* About: revelação (sem blur) — atraso por `--about-reveal-delay` */
+.about-anim-target {
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
+  transition:
+    opacity 0.7s ease,
+    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--about-reveal-delay, 0ms);
+}
+
+.about-section--visible .about-anim-target {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-anim-target {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* About: brilho futurista no cruzamento / separador (intensidade e cor variam) */
+@keyframes aboutFuturisticSheen {
+  0%,
+  100% {
+    opacity: 0.32;
+    filter: blur(0.5px) brightness(0.95);
+  }
+  25% {
+    opacity: 0.95;
+    filter: blur(1.2px) brightness(1.35) hue-rotate(12deg);
+  }
+  55% {
+    opacity: 0.55;
+    filter: blur(0.7px) brightness(1.15) hue-rotate(-8deg);
+  }
+  80% {
+    opacity: 0.75;
+    filter: blur(1px) brightness(1.25) hue-rotate(6deg);
+  }
+}
+
+.about-glow-future-line {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(56, 189, 248, 0.1) 35%,
+    rgba(14, 165, 233, 0.85) 50%,
+    rgba(6, 182, 212, 0.35) 65%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 10px 1px rgba(14, 165, 233, 0.35),
+    0 0 24px 4px rgba(6, 182, 212, 0.2),
+    0 0 40px 8px rgba(56, 189, 248, 0.12);
+  animation: aboutFuturisticSheen var(--about-glow-dur, 2.4s) ease-in-out
+    var(--about-glow-delay, 0s) infinite;
+  will-change: opacity, filter;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-glow-future-line {
+    animation: none;
+    opacity: 0.4;
+    filter: none;
+  }
 }
