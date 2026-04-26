@@ -17,6 +17,10 @@ import { WhyFnxSection } from "@/components/why-fnx-section";
 const contactIconClass =
   "mt-0.5 h-5 w-5 shrink-0 text-[#0B1F3A]";
 
+/** Produção: URL pública (ex. Vercel Blob) se `owner.mp4` não estiver no repo. Local: `/owner.mp4`. */
+const ownerSectionVideoSrc =
+  process.env.NEXT_PUBLIC_OWNER_VIDEO_URL?.trim() || "/owner.mp4";
+
 function IconLocation() {
   return (
     <svg
@@ -187,7 +191,7 @@ export default function Home() {
               poster="/owner-operator-section.png"
               preload="auto"
             >
-              <source src="/owner.mp4" type="video/mp4" />
+              <source src={ownerSectionVideoSrc} type="video/mp4" />
             </video>
             <Image
               alt="White cargo van and forklift loading palletized freight at a distribution yard"
