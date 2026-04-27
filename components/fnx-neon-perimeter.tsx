@@ -45,10 +45,7 @@ export function FnxNeonPerimeter({
         className="fnx-neon-perimeter-glow pointer-events-none absolute z-0 rounded-sm"
         style={{
           ...style,
-          top: inset,
-          right: inset,
-          bottom: inset,
-          left: inset,
+          inset,
         }}
       />
       <div className="relative z-[1] flex min-h-0 w-full min-w-0 flex-1 flex-col">

@@ -139,7 +139,12 @@ export function WhyFnxSection() {
               })}
             </div>
 
-            <FnxNeonPerimeter className="mt-6" delay={delay} dur={dur} reduced={reduced}>
+            <FnxNeonPerimeter
+              className="fnx-neon-why-fnx-panel mt-6 max-sm:h-auto max-sm:min-h-0"
+              delay={delay}
+              dur={dur}
+              reduced={reduced}
+            >
               <div
                 className="min-h-[12rem] overflow-hidden rounded-sm border-0 bg-gradient-to-br from-[#F1F5F9]/90 to-white/80 p-6 sm:min-h-[11rem] sm:p-8"
                 id={`${uid}-panel`}

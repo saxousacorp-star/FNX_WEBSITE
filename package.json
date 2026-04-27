@@ -14,6 +14,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "favicon": "node scripts/sync-favicon.mjs",
     "map-data": "node scripts/generate-us-map-data.mjs",
     "mask-fleet": "node scripts/mask-black-background.mjs"
   },

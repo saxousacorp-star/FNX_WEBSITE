@@ -52,6 +52,14 @@ export const metadata: Metadata = {
   title: "Fnx Transportation | We do it.",
   description:
     "Expedited nationwide freight: secure capacity, time-critical delivery, and transport with safety and urgency.",
+  /* Ícones de aba (desktop/mobile): gerados a partir de assets/logoaba.svg via `npm run favicon` */
+  icons: {
+    icon: [
+      { url: "/icon.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon.svg", type: "image/svg+xml", sizes: "any" },
+    ],
+    apple: "/apple-icon.png",
+  },
   robots: { index: true, follow: true },
   openGraph: {
     type: "website",

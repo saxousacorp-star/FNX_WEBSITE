@@ -30,6 +30,12 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // /favicon.ico → PNG derivado de assets/logoaba.svg (uso exclusivo: aba do browser)
+      {
+        source: "/favicon.ico",
+        destination: "/icon.png",
+        permanent: false,
+      },
       {
         source: "/owner-operator",
         destination: "/join-our-team",
