@@ -91,6 +91,7 @@ export default function RootLayout({
   return (
     <html
       className={`${inter.variable} ${plusJakarta.variable} h-full antialiased`}
+      data-scroll-behavior="smooth"
       dir="ltr"
       lang="en"
     >

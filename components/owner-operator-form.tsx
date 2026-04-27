@@ -2,6 +2,11 @@
 
 import { useState } from "react";
 
+import {
+  isValidUsPhoneDigits,
+  usPhoneDigitsToDisplay,
+  usPhoneInputToDigits,
+} from "@/lib/us-phone";
 import { US_STATES } from "@/lib/us-states-list";
 
 const inputClassName =
@@ -16,12 +21,22 @@ const radioLabelClass =
 
 export function OwnerOperatorForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [phoneDigits, setPhoneDigits] = useState("");
+  const [phoneError, setPhoneError] = useState<string | null>(null);
+  const phoneDisplay = usPhoneDigitsToDisplay(phoneDigits);
 
   return (
     <form
       className="mt-2 space-y-6"
       onSubmit={(e) => {
         e.preventDefault();
+        setPhoneError(null);
+        if (!isValidUsPhoneDigits(phoneDigits)) {
+          setPhoneError(
+            "US numbers only. Enter a full number: +1, area code, and 7 digits (e.g. +1 (555) 123-4567).",
+          );
+          return;
+        }
         setSubmitted(true);
       }}
     >
@@ -40,6 +55,7 @@ export function OwnerOperatorForm() {
           <input
             autoComplete="given-name"
             className={inputClassName}
+            disabled={submitted}
             id="ooFirstName"
             name="firstName"
             placeholder="e.g. Jordan"
@@ -54,6 +70,7 @@ export function OwnerOperatorForm() {
           <input
             autoComplete="family-name"
             className={inputClassName}
+            disabled={submitted}
             id="ooLastName"
             name="lastName"
             placeholder="e.g. Rivera"
@@ -70,6 +87,7 @@ export function OwnerOperatorForm() {
         <input
           autoComplete="organization"
           className={inputClassName}
+          disabled={submitted}
           id="companyName"
           name="companyName"
           placeholder="e.g. your LLC or DBA"
@@ -81,17 +99,38 @@ export function OwnerOperatorForm() {
       <div className="grid gap-6 sm:grid-cols-2">
         <div className="space-y-2">
           <label className={labelClassName} htmlFor="ooPhone">
-            Phone number
+            Phone number <span className="text-[#64748B]">(US only, starts with +1)</span>
           </label>
           <input
             autoComplete="tel"
             className={inputClassName}
+            disabled={submitted}
+            enterKeyHint="next"
             id="ooPhone"
+            inputMode="numeric"
             name="phone"
-            placeholder="e.g. +1 (555) 000-0000"
-            required
+            onChange={(e) => {
+              setPhoneError(null);
+              setPhoneDigits(usPhoneInputToDigits(e.target.value));
+            }}
+            placeholder="+1 (555) 000-0000"
             type="tel"
+            value={phoneDisplay}
+            aria-describedby={
+              phoneError != null
+                ? "ooPhone-err ooPhone-hint"
+                : "ooPhone-hint"
+            }
+            aria-invalid={phoneError != null}
           />
+          {phoneError ? (
+            <p className="text-sm text-[#B91C1C]" id="ooPhone-err" role="alert">
+              {phoneError}
+            </p>
+          ) : null}
+          <p className="text-sm text-[#64748B]" id="ooPhone-hint">
+            Only United States numbers. Digits are formatted as +1 (XXX) XXX-XXXX for export.
+          </p>
         </div>
         <div className="space-y-2">
           <label className={labelClassName} htmlFor="ooEmail">
@@ -100,6 +139,7 @@ export function OwnerOperatorForm() {
           <input
             autoComplete="email"
             className={inputClassName}
+            disabled={submitted}
             enterKeyHint="next"
             id="ooEmail"
             inputMode="email"
@@ -119,6 +159,7 @@ export function OwnerOperatorForm() {
           <input
             autoComplete="address-level2"
             className={inputClassName}
+            disabled={submitted}
             id="ooCity"
             name="city"
             placeholder="e.g. Charlotte"
@@ -133,6 +174,7 @@ export function OwnerOperatorForm() {
           <select
             autoComplete="address-level1"
             className={selectClassName}
+            disabled={submitted}
             id="ooState"
             name="state"
             defaultValue=""
@@ -159,6 +201,7 @@ export function OwnerOperatorForm() {
           <label className={radioLabelClass}>
             <input
               className="h-4 w-4 accent-[#0B1F3A] shrink-0"
+              disabled={submitted}
               name="commercialInsurance"
               required
               type="radio"
@@ -169,7 +212,38 @@ export function OwnerOperatorForm() {
           <label className={radioLabelClass}>
             <input
               className="h-4 w-4 accent-[#0B1F3A] shrink-0"
+              disabled={submitted}
               name="commercialInsurance"
+              type="radio"
+              value="no"
+            />
+            No
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset className="space-y-3">
+        <legend className={labelClassName}>
+          DOT number
+        </legend>
+        <p className="text-sm text-[#64748B]">Do you have a DOT number?</p>
+        <div className="flex flex-wrap gap-3">
+          <label className={radioLabelClass}>
+            <input
+              className="h-4 w-4 accent-[#0B1F3A] shrink-0"
+              disabled={submitted}
+              name="hasDotNumber"
+              required
+              type="radio"
+              value="yes"
+            />
+            Yes
+          </label>
+          <label className={radioLabelClass}>
+            <input
+              className="h-4 w-4 accent-[#0B1F3A] shrink-0"
+              disabled={submitted}
+              name="hasDotNumber"
               type="radio"
               value="no"
             />
@@ -184,6 +258,7 @@ export function OwnerOperatorForm() {
         </label>
         <textarea
           className={`${inputClassName} min-h-[9rem] resize-y`}
+          disabled={submitted}
           id="ooMessage"
           name="message"
           placeholder="Equipment, experience, lanes, or questions…"
