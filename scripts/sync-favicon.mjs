@@ -1,9 +1,9 @@
 /**
- * `assets/logoaba.svg` é só fonte para o favicon (aba em desktop e mobile).
- * Gera ICO + PNG + SVG que os browsers reconhecem (muitos ignoram só SVG ou redirects).
- * Executar: npm run favicon
+ * `assets/logoaba.svg` → favicon para a aba (desktop + mobile).
+ * - `public/favicon.ico` : pedido direto pelo browser (mais fiável que só metadata)
+ * - `app/icon.png` : convenção Next + PNG 48px (sem SVG na app — Safari falha com SVGs pesados)
  */
-import { copyFileSync, writeFileSync } from "node:fs";
+import { existsSync, unlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import pngToIco from "png-to-ico";
@@ -11,16 +11,20 @@ import sharp from "sharp";
 
 const root = join(fileURLToPath(new URL(".", import.meta.url)), "..");
 const src = join(root, "assets/logoaba.svg");
-const svgOut = join(root, "app/icon.svg");
 const pngOut = join(root, "app/icon.png");
-const icoOut = join(root, "app/favicon.ico");
+const icoPublic = join(root, "public/favicon.ico");
 
 const bg = { r: 245, g: 245, b: 247, alpha: 1 };
 
-copyFileSync(src, svgOut);
+/* Safari / Chrome às vezes ficam com link antigo para estes ficheiros */
+for (const legacy of [join(root, "app/icon.svg"), join(root, "app/favicon.ico")]) {
+  if (existsSync(legacy)) {
+    unlinkSync(legacy);
+  }
+}
 
 await sharp(src)
-  .resize(32, 32, { fit: "contain", background: bg })
+  .resize(48, 48, { fit: "contain", background: bg })
   .png()
   .toFile(pngOut);
 
@@ -34,6 +38,6 @@ const buffers = await Promise.all(
   ),
 );
 const ico = await pngToIco(buffers);
-writeFileSync(icoOut, ico);
+writeFileSync(icoPublic, ico);
 
-console.log("Favicon: assets/logoaba.svg → favicon.ico, icon.png, icon.svg");
+console.log("Favicon: assets/logoaba.svg → public/favicon.ico + app/icon.png");

@@ -52,13 +52,13 @@ export const metadata: Metadata = {
   title: "Fnx Transportation | We do it.",
   description:
     "Expedited nationwide freight: secure capacity, time-critical delivery, and transport with safety and urgency.",
-  /* Aba: favicon.ico + PNG/SVG gerados com `npm run favicon` a partir de assets/logoaba.svg */
+  /* Aba: `public/favicon.ico` + `app/icon.png` via `npm run favicon` (assets/logoaba.svg). Sem SVG no head — evita ícone genérico no Safari. */
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "48x48", type: "image/x-icon" },
-      { url: "/icon.png", sizes: "32x32", type: "image/png" },
-      { url: "/icon.svg", type: "image/svg+xml", sizes: "any" },
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "48x48" },
     ],
+    shortcut: "/favicon.ico",
     apple: "/apple-icon.png",
   },
   robots: { index: true, follow: true },
