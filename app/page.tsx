@@ -233,59 +233,52 @@ export default function Home() {
         </div>
       </section>
 
-      <footer id="contact" className="bg-[#F5F5F7] py-20 md:py-24">
-        <div className="mx-auto w-full max-w-7xl px-6 md:px-12">
-          {/* Duas colunas simétricas: esq. (Q1+Q3) | dir. (Q2+Q4) — alinhamento e espaçamento iguais */}
-          <div className="flex w-full flex-col gap-16 lg:flex-row lg:items-stretch lg:justify-between lg:gap-x-16 lg:gap-y-0 xl:gap-x-24">
-            {/* Coluna esquerda: Q1 logo + Q3 contactos (mesma origem, alinhados) */}
-            <div className="flex w-full min-w-0 max-w-md flex-1 flex-col gap-12 sm:gap-16 lg:max-w-[26rem]">
-              <div className="flex items-start">
+      <footer id="contact" className="bg-[#F5F5F7] py-14 sm:py-16 md:py-24">
+        <div className="mx-auto w-full max-w-7xl px-5 sm:px-6 md:px-12">
+          <div className="grid w-full grid-cols-1 gap-12 sm:gap-14 lg:grid-cols-2 lg:items-start lg:gap-x-16 lg:gap-y-0 xl:gap-x-24">
+            {/* Logo + contactos: mesma grelha, alinhamento à esquerda; no mobile bloco centrado com largura máx. igual */}
+            <div className="flex w-full min-w-0 flex-col items-center gap-10 text-center sm:items-start sm:text-left lg:max-w-md">
+              <div className="flex w-full justify-center sm:justify-start">
                 <Image
                   alt="FNX Logo"
-                  className="h-[4.96rem] w-auto max-w-none shrink-0 sm:h-[5.79rem] [backface-visibility:hidden] [image-rendering:auto] [transform:translateZ(0)]"
+                  className="h-28 w-auto max-w-[min(100%,20rem)] shrink-0 sm:h-32 md:h-36 [backface-visibility:hidden] [image-rendering:auto] [transform:translateZ(0)]"
                   height={200}
-                  sizes="(max-width: 640px) min(100vw, 400px), 480px"
+                  sizes="(max-width: 640px) 280px, 400px"
                   src="/logo1.svg"
                   unoptimized
                   width={600}
                 />
               </div>
-              <div className="mt-[2cm] w-full pl-[1cm]">
-                <p className="mb-3 text-sm font-semibold text-[#0F172A] [font-family:var(--font-jakarta),var(--font-inter),ui-sans-serif]">
-                  FNX Log LLC
-                </p>
-                <address className="not-italic">
-                  <ul className="space-y-4 text-sm leading-6 text-[#334155]">
-                    <li className="flex items-start gap-3">
-                      <IconLocation />
-                      <span>Charlotte, North Carolina, USA</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <IconMail />
-                      <a
-                        className="transition hover:text-[#0F172A] hover:underline"
-                        href="mailto:ops@fnxtransportation.com"
-                      >
-                        ops@fnxtransportation.com
-                      </a>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <IconPhone />
-                      <a
-                        className="transition hover:text-[#0F172A] hover:underline"
-                        href="tel:+19804723916"
-                      >
-                        +1 (980) 472-3916
-                      </a>
-                    </li>
-                  </ul>
-                </address>
-              </div>
+              <address className="not-italic">
+                <ul className="mx-auto flex w-full max-w-sm flex-col gap-4 text-sm leading-7 text-[#334155] sm:mx-0 sm:max-w-none">
+                  <li className="flex items-start justify-center gap-3 sm:justify-start">
+                    <IconLocation />
+                    <span>Charlotte, North Carolina, USA</span>
+                  </li>
+                  <li className="flex items-start justify-center gap-3 sm:justify-start">
+                    <IconMail />
+                    <a
+                      className="transition hover:text-[#0F172A] hover:underline"
+                      href="mailto:ops@fnxtransportation.com"
+                    >
+                      ops@fnxtransportation.com
+                    </a>
+                  </li>
+                  <li className="flex items-start justify-center gap-3 sm:justify-start">
+                    <IconPhone />
+                    <a
+                      className="transition hover:text-[#0F172A] hover:underline"
+                      href="tel:+19804723916"
+                    >
+                      +1 (980) 472-3916
+                    </a>
+                  </li>
+                </ul>
+              </address>
             </div>
 
-            {/* Coluna direita: Q2 Company + Q4 Job/Terms — mesmo gap vertical que à esquerda */}
-            <div className="flex w-full min-w-0 max-w-md flex-1 flex-col gap-12 pl-[2cm] sm:gap-16 lg:max-w-[26rem]">
-              <div>
+            <div className="flex w-full min-w-0 flex-col items-center gap-10 text-center sm:items-start sm:gap-12 sm:text-left lg:max-w-md lg:justify-self-end lg:pl-0 xl:pl-8">
+              <div className="w-full max-w-sm sm:max-w-none">
                 <p className="type-footer-label">Company</p>
                 <ul className="mt-4 space-y-2.5 text-sm leading-6 text-[#334155]">
                   <li>
@@ -313,7 +306,7 @@ export default function Home() {
                   </li>
                 </ul>
               </div>
-              <div className="flex flex-col gap-8">
+              <div className="flex w-full max-w-sm flex-col gap-8 sm:max-w-none">
                 <div>
                   <p className="type-footer-label">Job apply</p>
                   <ul className="mt-4 space-y-2.5 text-sm text-[#334155]">
@@ -347,7 +340,7 @@ export default function Home() {
           </div>
         </div>
 
-        <SiteCredits className="mx-auto mt-16 w-full max-w-7xl border-t border-slate-200/80 px-6 pt-8 md:mt-20 md:px-12 md:pt-10" />
+        <SiteCredits className="mx-auto mt-12 w-full max-w-7xl border-t border-slate-200/80 px-5 pt-8 sm:mt-14 sm:px-6 md:mt-20 md:px-12 md:pt-10" />
       </footer>
 
       <FooterHeroArrow />
