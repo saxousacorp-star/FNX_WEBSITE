@@ -1,8 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
+
+const MOBILE_CAROUSEL_QUERY = "(max-width: 639px)";
+const CAROUSEL_AUTO_MS = 1750;
 
 /**
  * Mesma cor sólida que o fundo da secção, para não haver franja (composição) entre
@@ -11,8 +14,10 @@ import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
 const FLEET_FRAME_BG = "bg-[#F5F5F7]";
 
 /* Mesmo ritmo de grelha que `ServicesSection` (1 col. → 2 a partir de `sm`). */
-const fleetGridClass =
-  "m-0 grid w-full list-none grid-cols-1 gap-[0.3cm] p-0 sm:grid-cols-2";
+const fleetDesktopGridClass =
+  "m-0 hidden w-full list-none grid-cols-2 gap-[0.3cm] p-0 sm:grid";
+const fleetMobileStackClass =
+  "m-0 grid w-full list-none grid-cols-1 gap-[0.3cm] p-0 sm:hidden";
 
 /**
  * `public/nsssf.svg` (Small Straight). Inclui `?v=` para forçar novo fetch; incrementa o número
@@ -273,23 +278,123 @@ function FleetSlideCell({
 
 export function OurFleetCarousel() {
   const reduced = usePrefersReducedMotion();
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const [mobileCarousel, setMobileCarousel] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia(MOBILE_CAROUSEL_QUERY);
+    const sync = () => setMobileCarousel(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  useEffect(() => {
+    if (reduced || !mobileCarousel) {
+      return;
+    }
+    const tick = () => {
+      if (document.visibilityState !== "visible") {
+        return;
+      }
+      setCarouselIndex((i) => (i + 1) % SLIDES.length);
+    };
+    const id = window.setInterval(tick, CAROUSEL_AUTO_MS);
+    return () => window.clearInterval(id);
+  }, [reduced, mobileCarousel]);
 
   return (
-    <ul className={fleetGridClass} role="list">
-      {SLIDES.map((slide, i) => (
-        <li className="m-0 min-w-0 border-0 p-0" key={slide.label}>
-          <FleetSlideCell
-            description={slide.description}
-            imageCutout={slide.imageCutout}
-            imageSrc={slide.imageSrc}
-            inView
-            label={slide.label}
-            matteToSectionBg={slide.matteToSectionBg}
-            priority={i < 2}
-            reduced={reduced}
-          />
-        </li>
-      ))}
-    </ul>
+    <>
+      <ul className={fleetDesktopGridClass} role="list">
+        {SLIDES.map((slide, i) => (
+          <li className="m-0 min-w-0 border-0 p-0" key={slide.label}>
+            <FleetSlideCell
+              description={slide.description}
+              imageCutout={slide.imageCutout}
+              imageSrc={slide.imageSrc}
+              inView
+              label={slide.label}
+              matteToSectionBg={slide.matteToSectionBg}
+              priority={i < 2}
+              reduced={reduced}
+            />
+          </li>
+        ))}
+      </ul>
+
+      {reduced ? (
+        <ul className={fleetMobileStackClass} role="list">
+          {SLIDES.map((slide, i) => (
+            <li className="m-0 min-w-0 border-0 p-0" key={`stack-${slide.label}`}>
+              <FleetSlideCell
+                description={slide.description}
+                imageCutout={slide.imageCutout}
+                imageSrc={slide.imageSrc}
+                inView
+                label={slide.label}
+                matteToSectionBg={slide.matteToSectionBg}
+                priority={i < 2}
+                reduced={reduced}
+              />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div
+          aria-label="Our fleet carousel"
+          className="sm:hidden"
+          role="region"
+        >
+          <div className="overflow-hidden rounded-sm">
+            <div
+              className="flex transition-transform duration-500 ease-out motion-reduce:transition-none"
+              style={{
+                transform: `translate3d(-${carouselIndex * 100}%,0,0)`,
+              }}
+            >
+              {SLIDES.map((slide, i) => (
+                <div
+                  className="min-w-0 shrink-0 basis-full"
+                  key={slide.label}
+                >
+                  <FleetSlideCell
+                    description={slide.description}
+                    imageCutout={slide.imageCutout}
+                    imageSrc={slide.imageSrc}
+                    inView={i === carouselIndex}
+                    label={slide.label}
+                    matteToSectionBg={slide.matteToSectionBg}
+                    priority={i < 2}
+                    reduced={reduced}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div
+            aria-label="Slide indicators"
+            className="mt-4 flex justify-center gap-1.5"
+            role="tablist"
+          >
+            {SLIDES.map((slide, i) => (
+              <button
+                aria-label={`${slide.label}, slide ${i + 1} of ${SLIDES.length}`}
+                aria-selected={i === carouselIndex}
+                className={[
+                  "h-2 rounded-full transition-[width,background-color] duration-300",
+                  i === carouselIndex
+                    ? "w-6 bg-[#0B1F3A]"
+                    : "w-2 bg-[#CBD5E1] hover:bg-[#94A3B8]",
+                ].join(" ")}
+                key={slide.label}
+                onClick={() => setCarouselIndex(i)}
+                role="tab"
+                type="button"
+              />
+            ))}
+          </div>
+        </div>
+      )}
+    </>
   );
 }

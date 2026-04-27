@@ -6,7 +6,7 @@ import { OwnerOperatorForm } from "@/components/owner-operator-form";
 
 export default function JoinOurTeamPage() {
   return (
-    <main className="min-h-dvh scroll-smooth bg-[#F8FAFC] pt-[calc(6rem+1cm+env(safe-area-inset-top,0px))] text-[#1F2933] lg:pt-[calc(3.5rem+1cm+env(safe-area-inset-top,0px))] [scroll-padding-top:calc(5.5rem+env(safe-area-inset-top,0px))]">
+    <main className="min-h-screen min-h-[var(--fnx-viewport-min-height)] scroll-smooth bg-[#F8FAFC] pt-[calc(6rem+1cm+env(safe-area-inset-top,0px))] text-[#1F2933] lg:pt-[calc(3.5rem+1cm+env(safe-area-inset-top,0px))] [scroll-padding-top:calc(5.5rem+env(safe-area-inset-top,0px))]">
       <SiteHeader />
 
       <div className="mx-auto w-full max-w-3xl px-6 py-16 md:px-8 md:py-24">

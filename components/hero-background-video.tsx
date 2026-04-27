@@ -1,6 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, type SyntheticEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  type SyntheticEvent,
+} from "react";
 
 /**
  * `true` = repetição contínua (recomendado no hero).
@@ -24,6 +30,35 @@ export function HeroBackgroundVideo() {
     v.play().catch(() => {
       /* autoplay policies */
     });
+  }, []);
+
+  useLayoutEffect(() => {
+    const v = videoRef.current;
+    if (!v) {
+      return undefined;
+    }
+    v.muted = true;
+    v.setAttribute("playsinline", "");
+    v.setAttribute("webkit-playsinline", "");
+    const tryPlay = () => {
+      v.play().catch(() => {
+        /* autoplay */
+      });
+    };
+    tryPlay();
+    v.addEventListener("loadeddata", tryPlay);
+    v.addEventListener("canplay", tryPlay);
+    const onVis = () => {
+      if (document.visibilityState === "visible") {
+        tryPlay();
+      }
+    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => {
+      v.removeEventListener("loadeddata", tryPlay);
+      v.removeEventListener("canplay", tryPlay);
+      document.removeEventListener("visibilitychange", onVis);
+    };
   }, []);
 
   useEffect(() => {
@@ -74,7 +109,7 @@ export function HeroBackgroundVideo() {
     <div ref={containerRef} className="pointer-events-none absolute inset-0 z-0">
       <video
         ref={videoRef}
-        className="h-full min-h-full w-full object-cover motion-reduce:hidden"
+        className="h-full min-h-full w-full object-cover object-center motion-reduce:hidden max-sm:object-[50%_42%] max-sm:min-h-[104%] max-sm:min-w-full max-sm:scale-[1.02]"
         autoPlay
         loop={HERO_VIDEO_LOOP}
         muted

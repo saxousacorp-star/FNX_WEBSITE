@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { FnxNeonPerimeter } from "@/components/fnx-neon-perimeter";
+import { useFuturisticGlowTiming } from "@/lib/use-futuristic-glow-timing";
 import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
 
 const ROTATE_MS = 5000;
@@ -54,6 +56,7 @@ export function WhyFnxSection() {
   const [active, setActive] = useState(0);
   const pauseRef = useRef(false);
   const reduced = usePrefersReducedMotion();
+  const { dur, delay } = useFuturisticGlowTiming(reduced);
   const current = REASONS[active];
 
   const advance = useCallback(() => {
@@ -136,18 +139,20 @@ export function WhyFnxSection() {
               })}
             </div>
 
-            <div
-              className="relative mt-6 min-h-[12rem] overflow-hidden border-0 bg-gradient-to-br from-[#F1F5F9]/90 to-white/80 p-6 sm:min-h-[11rem] sm:p-8"
-              id={`${uid}-panel`}
-              role="tabpanel"
-              aria-labelledby={`${uid}-tab-${active}`}
-              tabIndex={0}
-            >
-              <div className="why-fnx-panel-swap" key={active}>
-                <h3 className="type-card-title text-[#0F172A]">{current.title}</h3>
-                <p className="mt-4 text-base leading-8 text-[#475569]">{current.blurb}</p>
+            <FnxNeonPerimeter className="mt-6" delay={delay} dur={dur} reduced={reduced}>
+              <div
+                className="min-h-[12rem] overflow-hidden rounded-sm border-0 bg-gradient-to-br from-[#F1F5F9]/90 to-white/80 p-6 sm:min-h-[11rem] sm:p-8"
+                id={`${uid}-panel`}
+                role="tabpanel"
+                aria-labelledby={`${uid}-tab-${active}`}
+                tabIndex={0}
+              >
+                <div className="why-fnx-panel-swap" key={active}>
+                  <h3 className="type-card-title text-[#0F172A]">{current.title}</h3>
+                  <p className="mt-4 text-base leading-8 text-[#475569]">{current.blurb}</p>
+                </div>
               </div>
-            </div>
+            </FnxNeonPerimeter>
 
             <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
               <div className="flex flex-wrap items-center gap-1.5" aria-hidden>

@@ -4,6 +4,7 @@ import { OurFleetCarousel } from "@/components/fleet-carousel";
 import { FooterHeroArrow } from "@/components/footer-hero-arrow";
 import { HeroBackgroundVideo } from "@/components/hero-background-video";
 import { HeroSocialRail } from "@/components/hero-social-rail";
+import { OwnerSectionVideo } from "@/components/owner-section-video";
 import { AboutSection } from "@/components/about-section";
 import { ScrollSweepDivider } from "@/components/scroll-sweep-divider";
 import { ServiceAreasSection } from "@/components/service-areas-section";
@@ -85,12 +86,12 @@ function IconPhone() {
 
 export default function Home() {
   return (
-    <main className="min-h-dvh scroll-smooth bg-[#F5F5F7] pt-[calc(6rem+1cm+env(safe-area-inset-top,0px))] text-[#1F2933] lg:pt-[calc(3.5rem+1cm+env(safe-area-inset-top,0px))] [scroll-padding-top:calc(5.5rem+env(safe-area-inset-top,0px))]">
+    <main className="min-h-screen min-h-[var(--fnx-viewport-min-height)] scroll-smooth bg-[#F5F5F7] pt-[calc(6rem+1cm+env(safe-area-inset-top,0px))] text-[#1F2933] lg:pt-[calc(3.5rem+1cm+env(safe-area-inset-top,0px))] [scroll-padding-top:calc(5.5rem+env(safe-area-inset-top,0px))]">
       <SiteHeader />
 
       <section
         id="hero"
-        className="relative min-h-[min(92dvh,52rem)] overflow-hidden"
+        className="relative min-h-[var(--fnx-hero-section-min)] overflow-hidden max-sm:min-h-[var(--fnx-hero-section-min-mobile)]"
       >
         <HeroBackgroundVideo />
         <div
@@ -98,12 +99,12 @@ export default function Home() {
           aria-hidden
         />
         <div
-          className="absolute inset-0 z-[1] bg-gradient-to-r from-white via-white/88 to-white/20"
+          className="absolute inset-0 z-[1] bg-gradient-to-r from-white via-white/88 to-white/20 max-sm:from-white max-sm:via-white/92 max-sm:to-white/35"
           aria-hidden
         />
         <HeroSocialRail />
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-20 pt-12 sm:px-6 sm:pt-16 lg:px-10 lg:pb-24 lg:pt-20">
-          <div className="max-w-2xl -translate-x-[2cm] text-left">
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-20 pt-8 sm:px-6 sm:pt-16 lg:px-10 max-sm:pb-28 sm:pb-20 lg:pb-24 lg:pt-20">
+          <div className="max-w-2xl translate-x-0 text-left sm:-translate-x-[2cm]">
             <h1 className="type-hero">
               Drive Forward. Deliver Right. Every Time.
             </h1>
@@ -179,32 +180,7 @@ export default function Home() {
         <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-10 px-6 pt-[120px] md:max-w-none md:grid-cols-2 md:items-stretch md:gap-0 md:px-0">
           <div className="z-0 min-w-0 md:pl-[0.5cm]">
             <div className="relative min-h-0 w-full min-h-[220px] overflow-hidden bg-[#F5F5F7] aspect-[4/3] sm:aspect-[3/2] md:aspect-auto md:h-full">
-            <video
-              aria-label="White cargo van and forklift loading palletized freight at a distribution yard"
-              autoPlay
-              className="owner-operator-media-mask absolute inset-0 z-0 h-full w-full min-h-full min-w-full origin-center object-cover object-center brightness-[0.99] saturate-[0.95] [transform:scale(1.08)_translateZ(0)] motion-reduce:hidden"
-              loop
-              muted
-              playsInline
-              disablePictureInPicture
-              disableRemotePlayback
-              poster="/owner-operator-section.png"
-              preload="auto"
-            >
-              <source src={ownerSectionVideoSrc} type="video/mp4" />
-            </video>
-            <Image
-              alt="White cargo van and forklift loading palletized freight at a distribution yard"
-              className="owner-operator-media-mask hidden object-cover object-center brightness-[0.99] saturate-[0.95] motion-reduce:absolute motion-reduce:inset-0 motion-reduce:z-0 motion-reduce:block motion-reduce:h-full motion-reduce:w-full"
-              fill
-              sizes="(max-width: 768px) 100vw, 44vw"
-              src="/owner-operator-section.png"
-            />
-            {/* Móvel: bordas curtas; mais vídeo visível no centro */}
-            <div
-              className="pointer-events-none absolute inset-0 z-10 bg-[linear-gradient(180deg,#F5F5F7_0%,transparent_8%,transparent_92%,#F5F5F7_100%)] md:hidden"
-              aria-hidden
-            />
+              <OwnerSectionVideo videoSrc={ownerSectionVideoSrc} />
             </div>
           </div>
           <div className="relative z-[1] min-w-0 bg-[#F5F5F7] before:pointer-events-none before:absolute before:-left-3 before:top-0 before:z-0 before:hidden before:h-full before:w-3 before:bg-gradient-to-r before:from-[#F5F5F7]/0 before:to-[#F5F5F7] before:md:block md:pr-12">

@@ -2,6 +2,13 @@
   "name": "fnx-log-llc",
   "version": "0.1.0",
   "private": true,
+  "browserslist": [
+    ">0.5%",
+    "last 2 versions",
+    "Firefox ESR",
+    "not dead",
+    "iOS >= 14"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -83,9 +83,9 @@ const SERVICES: Service[] = [
   },
 ];
 
-/* 0.3cm between cards */
-const gridClass =
-  "mt-10 grid w-full grid-cols-1 gap-[0.3cm] sm:mt-12 sm:grid-cols-2 [&>article:nth-child(7)]:sm:col-span-2";
+/* Smartphone: carrossel automático; a partir de `sm` mantém grelha. */
+const MOBILE_CAROUSEL_QUERY = "(max-width: 639px)";
+const CAROUSEL_AUTO_MS = 1750;
 
 function easeOutCubic(t: number): number {
   return 1 - (1 - t) ** 3;
@@ -266,6 +266,30 @@ function ServiceBox({
 export function ServicesSection() {
   const trackRef = useRef<HTMLDivElement>(null);
   const reduced = usePrefersReducedMotion();
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const [mobileCarousel, setMobileCarousel] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia(MOBILE_CAROUSEL_QUERY);
+    const sync = () => setMobileCarousel(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  useEffect(() => {
+    if (reduced || !mobileCarousel) {
+      return;
+    }
+    const tick = () => {
+      if (document.visibilityState !== "visible") {
+        return;
+      }
+      setCarouselIndex((i) => (i + 1) % SERVICES.length);
+    };
+    const id = window.setInterval(tick, CAROUSEL_AUTO_MS);
+    return () => window.clearInterval(id);
+  }, [reduced, mobileCarousel]);
 
   const updateScroll = useCallback(() => {
     const el = trackRef.current;
@@ -292,12 +316,13 @@ export function ServicesSection() {
       p = easeOutCubic(p);
     }
 
+    if (window.innerWidth < 640) {
+      el.style.transform = "translate3d(0,0,0)";
+      return;
+    }
+
     const maxPx =
-      window.innerWidth < 640
-        ? 24
-        : window.innerWidth < 1280
-          ? 32
-          : 40;
+      window.innerWidth < 1280 ? 32 : 40;
     const x = (1 - p) * maxPx;
     el.style.transform = `translate3d(${x}px,0,0)`;
   }, []);
@@ -342,7 +367,7 @@ export function ServicesSection() {
           className="mt-0 overflow-x-clip will-change-transform"
           ref={trackRef}
         >
-          <div className={gridClass}>
+          <div className="hidden w-full sm:mt-12 sm:grid sm:grid-cols-2 sm:gap-[0.3cm] [&>article:nth-child(7)]:sm:col-span-2">
             {SERVICES.map((item) => (
               <ServiceBox
                 description={item.description}
@@ -357,6 +382,79 @@ export function ServicesSection() {
               />
             ))}
           </div>
+
+          {reduced ? (
+            <div className="mt-10 grid w-full grid-cols-1 gap-[0.3cm] sm:hidden">
+              {SERVICES.map((item) => (
+                <ServiceBox
+                  description={item.description}
+                  imageClassName={item.imageClassName}
+                  imageSizes={item.imageSizes}
+                  imageSrc={item.imageSrc}
+                  imageUnoptimized={item.imageUnoptimized}
+                  key={`m-${item.title}`}
+                  photo={item.photo}
+                  reduced={reduced}
+                  title={item.title}
+                />
+              ))}
+            </div>
+          ) : (
+            <div
+              aria-label="Services carousel"
+              className="relative mt-10 sm:hidden"
+              role="region"
+            >
+              <div className="overflow-hidden rounded-sm">
+                <div
+                  className="flex transition-transform duration-500 ease-out motion-reduce:transition-none"
+                  style={{
+                    transform: `translate3d(-${carouselIndex * 100}%,0,0)`,
+                  }}
+                >
+                  {SERVICES.map((item) => (
+                    <div
+                      className="min-w-0 shrink-0 basis-full px-0"
+                      key={item.title}
+                    >
+                      <ServiceBox
+                        description={item.description}
+                        imageClassName={item.imageClassName}
+                        imageSizes={item.imageSizes}
+                        imageSrc={item.imageSrc}
+                        imageUnoptimized={item.imageUnoptimized}
+                        photo={item.photo}
+                        reduced={reduced}
+                        title={item.title}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div
+                aria-label="Slide indicators"
+                className="mt-4 flex justify-center gap-1.5"
+                role="tablist"
+              >
+                {SERVICES.map((item, i) => (
+                  <button
+                    aria-label={`${item.title}, slide ${i + 1} of ${SERVICES.length}`}
+                    aria-selected={i === carouselIndex}
+                    className={[
+                      "h-2 rounded-full transition-[width,background-color] duration-300",
+                      i === carouselIndex
+                        ? "w-6 bg-[#0B1F3A]"
+                        : "w-2 bg-[#CBD5E1] hover:bg-[#94A3B8]",
+                    ].join(" ")}
+                    key={item.title}
+                    onClick={() => setCarouselIndex(i)}
+                    role="tab"
+                    type="button"
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>
