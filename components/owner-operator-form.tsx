@@ -78,19 +78,37 @@ export function OwnerOperatorForm() {
         />
       </div>
 
-      <div className="space-y-2">
-        <label className={labelClassName} htmlFor="ooPhone">
-          Phone number
-        </label>
-        <input
-          autoComplete="tel"
-          className={inputClassName}
-          id="ooPhone"
-          name="phone"
-          placeholder="e.g. +1 (555) 000-0000"
-          required
-          type="tel"
-        />
+      <div className="grid gap-6 sm:grid-cols-2">
+        <div className="space-y-2">
+          <label className={labelClassName} htmlFor="ooPhone">
+            Phone number
+          </label>
+          <input
+            autoComplete="tel"
+            className={inputClassName}
+            id="ooPhone"
+            name="phone"
+            placeholder="e.g. +1 (555) 000-0000"
+            required
+            type="tel"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className={labelClassName} htmlFor="ooEmail">
+            Email
+          </label>
+          <input
+            autoComplete="email"
+            className={inputClassName}
+            enterKeyHint="next"
+            id="ooEmail"
+            inputMode="email"
+            name="email"
+            placeholder="e.g. you@company.com"
+            required
+            type="email"
+          />
+        </div>
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2">

@@ -60,19 +60,37 @@ export function QuoteForm() {
         </div>
       </div>
 
-      <div className="space-y-2">
-        <label className={labelClassName} htmlFor="phone">
-          Phone Number
-        </label>
-        <input
-          autoComplete="tel"
-          className={inputClassName}
-          id="phone"
-          name="phone"
-          placeholder="e.g. +1 (555) 000-0000"
-          required
-          type="tel"
-        />
+      <div className="grid gap-6 sm:grid-cols-2">
+        <div className="space-y-2">
+          <label className={labelClassName} htmlFor="phone">
+            Phone Number
+          </label>
+          <input
+            autoComplete="tel"
+            className={inputClassName}
+            id="phone"
+            name="phone"
+            placeholder="e.g. +1 (555) 000-0000"
+            required
+            type="tel"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className={labelClassName} htmlFor="email">
+            Email
+          </label>
+          <input
+            autoComplete="email"
+            className={inputClassName}
+            enterKeyHint="next"
+            id="email"
+            inputMode="email"
+            name="email"
+            placeholder="e.g. you@company.com"
+            required
+            type="email"
+          />
+        </div>
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2">
