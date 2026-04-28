@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   isValidUsPhoneDigits,
@@ -19,16 +19,32 @@ const selectClassName = `${inputClassName} cursor-pointer`;
 const radioLabelClass =
   "inline-flex cursor-pointer items-center gap-2 rounded-lg border border-[#E2E8F0] bg-white px-4 py-3 text-sm text-[#0F172A] transition has-[:checked]:border-[#0B1F3A] has-[:checked]:ring-2 has-[:checked]:ring-[#0B1F3A]/15";
 
+function toYesNo(raw: string): "Yes" | "No" {
+  return raw.trim().toLowerCase() === "yes" ? "Yes" : "No";
+}
+
+const SUCCESS_RELOAD_MS = 3500;
+
 export function OwnerOperatorForm() {
   const [submitted, setSubmitted] = useState(false);
+  const reloadTimerRef = useRef<number | null>(null);
+  const [sending, setSending] = useState(false);
   const [phoneDigits, setPhoneDigits] = useState("");
   const [phoneError, setPhoneError] = useState<string | null>(null);
   const phoneDisplay = usPhoneDigitsToDisplay(phoneDigits);
 
+  useEffect(() => {
+    return () => {
+      if (reloadTimerRef.current != null) {
+        clearTimeout(reloadTimerRef.current);
+      }
+    };
+  }, []);
+
   return (
     <form
       className="mt-2 space-y-6"
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
         setPhoneError(null);
         if (!isValidUsPhoneDigits(phoneDigits)) {
@@ -37,13 +53,76 @@ export function OwnerOperatorForm() {
           );
           return;
         }
-        setSubmitted(true);
+
+        const form = e.currentTarget;
+
+        const fd = new FormData(form);
+
+        /** Mesmo contrato que `/api/owner-operator` envia ao Make (só texto, 11 campos). */
+        const formData = {
+          firstName: String(fd.get("firstName") ?? "").trim(),
+          lastName: String(fd.get("lastName") ?? "").trim(),
+          email: String(fd.get("email") ?? "").trim(),
+          phone: phoneDisplay.trim(),
+          companyName: String(fd.get("companyName") ?? "").trim(),
+          city: String(fd.get("city") ?? "").trim(),
+          state: String(fd.get("state") ?? "").trim(),
+          message: String(fd.get("message") ?? "").trim(),
+          commercialInsurance: toYesNo(
+            String(fd.get("commercialInsurance") ?? ""),
+          ),
+          dotNumber: toYesNo(String(fd.get("dotNumber") ?? "")),
+        };
+
+        setSending(true);
+        try {
+          const response = await fetch("/api/owner-operator", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          });
+
+          const data = (await response.json().catch(() => ({}))) as {
+            error?: string;
+            makeStatus?: number;
+          };
+
+          if (!response.ok) {
+            const msg =
+              typeof data.error === "string"
+                ? data.error
+                : `HTTP ${response.status} ${response.statusText}`;
+            const stamp =
+              typeof data.makeStatus === "number"
+                ? ` — Make devolveu HTTP ${data.makeStatus}`
+                : "";
+            alert(`O servidor ou o webhook rejeitou o pedido.${stamp}\n\n${msg}`);
+            return;
+          }
+
+          form.reset();
+          setPhoneDigits("");
+          setSubmitted(true);
+          reloadTimerRef.current = window.setTimeout(() => {
+            window.location.reload();
+          }, SUCCESS_RELOAD_MS);
+        } catch (err) {
+          alert(
+            `Não foi possível enviar: ${err instanceof Error ? err.message : String(err)}`,
+          );
+        } finally {
+          setSending(false);
+        }
       }}
     >
       {submitted ? (
         <p className="rounded-xl border border-[#C7D2FE] bg-[#EEF2FF] px-4 py-3 text-sm text-[#3730A3]">
-          Thank you. We’ve received your owner-operator details and will follow up
-          shortly.
+          Thank you! We will contact you shortly via email and SMS.
+          <span className="mt-1 block text-[#64748B]">
+            This page will refresh shortly so you can submit again.
+          </span>
         </p>
       ) : null}
 
@@ -55,7 +134,7 @@ export function OwnerOperatorForm() {
           <input
             autoComplete="given-name"
             className={inputClassName}
-            disabled={submitted}
+            disabled={submitted || sending}
             id="ooFirstName"
             name="firstName"
             placeholder="e.g. Jordan"
@@ -70,7 +149,7 @@ export function OwnerOperatorForm() {
           <input
             autoComplete="family-name"
             className={inputClassName}
-            disabled={submitted}
+            disabled={submitted || sending}
             id="ooLastName"
             name="lastName"
             placeholder="e.g. Rivera"
@@ -87,7 +166,7 @@ export function OwnerOperatorForm() {
         <input
           autoComplete="organization"
           className={inputClassName}
-          disabled={submitted}
+          disabled={submitted || sending}
           id="companyName"
           name="companyName"
           placeholder="e.g. your LLC or DBA"
@@ -104,7 +183,7 @@ export function OwnerOperatorForm() {
           <input
             autoComplete="tel"
             className={inputClassName}
-            disabled={submitted}
+            disabled={submitted || sending}
             enterKeyHint="next"
             id="ooPhone"
             inputMode="numeric"
@@ -139,7 +218,7 @@ export function OwnerOperatorForm() {
           <input
             autoComplete="email"
             className={inputClassName}
-            disabled={submitted}
+            disabled={submitted || sending}
             enterKeyHint="next"
             id="ooEmail"
             inputMode="email"
@@ -159,7 +238,7 @@ export function OwnerOperatorForm() {
           <input
             autoComplete="address-level2"
             className={inputClassName}
-            disabled={submitted}
+            disabled={submitted || sending}
             id="ooCity"
             name="city"
             placeholder="e.g. Charlotte"
@@ -174,7 +253,7 @@ export function OwnerOperatorForm() {
           <select
             autoComplete="address-level1"
             className={selectClassName}
-            disabled={submitted}
+            disabled={submitted || sending}
             id="ooState"
             name="state"
             defaultValue=""
@@ -201,7 +280,7 @@ export function OwnerOperatorForm() {
           <label className={radioLabelClass}>
             <input
               className="h-4 w-4 accent-[#0B1F3A] shrink-0"
-              disabled={submitted}
+              disabled={submitted || sending}
               name="commercialInsurance"
               required
               type="radio"
@@ -212,7 +291,7 @@ export function OwnerOperatorForm() {
           <label className={radioLabelClass}>
             <input
               className="h-4 w-4 accent-[#0B1F3A] shrink-0"
-              disabled={submitted}
+              disabled={submitted || sending}
               name="commercialInsurance"
               type="radio"
               value="no"
@@ -231,8 +310,8 @@ export function OwnerOperatorForm() {
           <label className={radioLabelClass}>
             <input
               className="h-4 w-4 accent-[#0B1F3A] shrink-0"
-              disabled={submitted}
-              name="hasDotNumber"
+              disabled={submitted || sending}
+              name="dotNumber"
               required
               type="radio"
               value="yes"
@@ -242,8 +321,8 @@ export function OwnerOperatorForm() {
           <label className={radioLabelClass}>
             <input
               className="h-4 w-4 accent-[#0B1F3A] shrink-0"
-              disabled={submitted}
-              name="hasDotNumber"
+              disabled={submitted || sending}
+              name="dotNumber"
               type="radio"
               value="no"
             />
@@ -258,7 +337,7 @@ export function OwnerOperatorForm() {
         </label>
         <textarea
           className={`${inputClassName} min-h-[9rem] resize-y`}
-          disabled={submitted}
+          disabled={submitted || sending}
           id="ooMessage"
           name="message"
           placeholder="Equipment, experience, lanes, or questions…"
@@ -270,10 +349,10 @@ export function OwnerOperatorForm() {
       <div>
         <button
           className="rounded-lg bg-[#0B1F3A] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#08162A] disabled:opacity-50"
-          disabled={submitted}
+          disabled={submitted || sending}
           type="submit"
         >
-          {submitted ? "Sent" : "Send application"}
+          {submitted ? "Sent" : sending ? "Sending…" : "Send application"}
         </button>
       </div>
     </form>

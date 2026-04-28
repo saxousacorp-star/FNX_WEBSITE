@@ -10,7 +10,8 @@
     "iOS >= 14"
   ],
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --hostname localhost",
+    "dev:lan": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
